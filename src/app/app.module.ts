@@ -5,8 +5,16 @@ import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { Graph2dComponent } from './pages/graph2d/graph2d.component';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import {MatButtonModule, MatCheckboxModule} from '@angular/material';
+import {
+    MatButtonModule,
+    MatButtonToggleModule,
+    MatCheckboxModule,
+    MatIconModule, MatSelectModule,
+    MatSliderModule, MatToolbarModule,
+    MatTooltipModule
+} from '@angular/material';
 import { ConfigurationComponent } from './pages/configuration/configuration.component';
+import {FlexLayoutModule} from '@angular/flex-layout';
 
 @NgModule({
   declarations: [
@@ -16,10 +24,17 @@ import { ConfigurationComponent } from './pages/configuration/configuration.comp
   ],
   imports: [
     BrowserModule,
-    AppRoutingModule,
+      FlexLayoutModule,
+      AppRoutingModule,
     BrowserAnimationsModule,
       MatButtonModule,
       MatCheckboxModule,
+      MatSliderModule,
+      MatButtonToggleModule,
+      MatIconModule,
+      MatTooltipModule,
+      MatToolbarModule,
+      MatSelectModule
   ],
   providers: [],
   bootstrap: [AppComponent]
