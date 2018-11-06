@@ -1,3 +1,37 @@
-<p>
-  configuration works!
-</p>
+<div class="configs" fxFlex>
+    <div class="buttons" fxLayout="row">
+        <mat-button-toggle-group name="fontStyle" aria-label="Font Style">
+            <mat-button-toggle value="start" matTooltip="Start" (click)="start()">
+                <mat-icon>play_arrow</mat-icon>
+            </mat-button-toggle>
+            <mat-button-toggle value="stop" matTooltip="Stop" (click)="stop()">
+                <mat-icon>stop</mat-icon>
+            </mat-button-toggle>
+            <mat-button-toggle value="reset" matTooltip="Reset" (click)="reset()">
+                <mat-icon>clear</mat-icon>
+            </mat-button-toggle>
+        </mat-button-toggle-group>
+    </div>
+
+    <div class="sliders" fxLayout="column">
+        <span><mat-slider #stepInterval thumbLabel tickInterval="auto"
+                          step="1" min="0" max="50" value="stepInterval"
+        ></mat-slider>Step Interval(ms)</span>
+        <span><mat-slider #popSize thumbLabel tickInterval="auto"
+                          step="5" min="5" max="1000" value="100"
+        ></mat-slider>Population Size</span>
+        <span><mat-slider #crossProb thumbLabel tickInterval="auto"
+                          step="0.05" min="0.0" max="1.0" value="0.3"
+        ></mat-slider>Crossover Probability</span>
+        <span><mat-slider #mutProb thumbLabel tickInterval="auto"
+                          step="0.01" min="0.0" max="1.0" value="0.3"
+        ></mat-slider>Mutation Probability</span>
+    </div>
+</div>
+
+
+
+
+
+
+
