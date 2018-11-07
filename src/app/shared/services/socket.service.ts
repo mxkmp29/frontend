@@ -53,6 +53,15 @@ export class SocketService {
         });
     }
 
+    public getStop(): Observable<any>{
+        return new Observable(observer => {
+           this.socket.on('Stop', (data) => {
+               console.log('SocketIO:Stop');
+              observer.next(data);
+           });
+        });
+    }
+
     public sendStart(config: Configuration): void {
         if (this._isConnected) {
             console.log('Socket:start', config);
@@ -72,7 +81,7 @@ export class SocketService {
 
     public sendStop() {
         if (this.isConnected) {
-            this.socket.emit('Stop');
+            this.socket.emit('Stop', true);
         } else {
             this.msgService.sendMessage('No server connection!');
         }

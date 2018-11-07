@@ -9,7 +9,7 @@ import {
     MatButtonModule,
     MatButtonToggleModule, MatCardModule,
     MatCheckboxModule, MatDividerModule, MatExpansionModule,
-    MatIconModule, MatInputModule, MatSelectModule,
+    MatIconModule, MatInputModule, MatProgressBarModule, MatSelectModule,
     MatSliderModule, MatSnackBarModule, MatToolbarModule,
     MatTooltipModule
 } from '@angular/material';
@@ -42,7 +42,8 @@ import {FormsModule} from '@angular/forms';
         MatCardModule,
         MatExpansionModule,
         MatSnackBarModule,
-        MatDividerModule
+        MatDividerModule,
+        MatProgressBarModule
     ],
     providers: [],
     bootstrap: [AppComponent]

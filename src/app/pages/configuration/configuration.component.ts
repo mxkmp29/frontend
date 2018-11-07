@@ -5,15 +5,15 @@ import {Subscription} from 'rxjs';
 import {GraphService} from '../../shared/services/graph.service';
 
 export interface Configuration {
-  stepInterval: number;
-  populationSize: number;
-  crossProbability: number;
-  mutationProbability: number;
-  populationToSimulate: number;
-  selectFromMatingPool: boolean;
-  cancelCriteria?: CancelCriteria;
-  combinationProcess?: CombinationProcess;
-  selectoinProcess?: SelectionProcess;
+    stepInterval: number;
+    populationSize: number;
+    crossProbability: number;
+    mutationProbability: number;
+    populationToSimulate: number;
+    selectFromMatingPool: boolean;
+    cancelCriteria?: CancelCriteria;
+    combinationProcess?: CombinationProcess;
+    selectoinProcess?: SelectionProcess;
 
 }
 
@@ -31,66 +31,84 @@ export interface SelectionProcess {
 }
 
 @Component({
-  selector: 'app-configuration',
-  templateUrl: './configuration.component.html',
-  styleUrls: ['./configuration.component.css']
+    selector: 'app-configuration',
+    templateUrl: './configuration.component.html',
+    styleUrls: ['./configuration.component.css']
 })
 export class ConfigurationComponent implements OnInit, AfterViewInit, OnDestroy {
-  stepInterval = 0;
-  populationSize = 1000;
-  crossProb  = 0.30;
-  mutProb = 0.05;
-  populationToSim = 100;
-  selectFromMatingPool = false;
+    stepInterval = 0;
+    populationSize = 1000;
+    crossProb = 0.30;
+    mutProb = 0.05;
+    populationToSim = 100;
+    selectFromMatingPool = false;
 
-  private subscriptions: Subscription[] = [];
+    calcIsRunning = false;
 
-  constructor(private socketService: SocketService,
-              private graphService: GraphService) {
+    private subscriptions: Subscription[] = [];
 
-  }
+    @ViewChild('start_button') runButton;
 
-  ngOnInit() {
+    constructor(private socketService: SocketService,
+                private graphService: GraphService) {
 
-  }
+    }
 
-  ngAfterViewInit() {
-      this.subscriptions.push(this.socketService.getMessages().subscribe((data) => {
-      }));
-  }
+    ngOnInit() {
 
-  ngOnDestroy() {
-      for (const sub of this.subscriptions) {
-          sub.unsubscribe();
-      }
-  }
+    }
 
-  start() {
-      this.socketService.sendStart(this.getConfig());
-  }
+    ngAfterViewInit() {
+        this.subscriptions.push(this.socketService.getMessages().subscribe((data) => {
 
-  stop() {
-      this.socketService.sendStop();
-  }
+        }));
 
-  reset() {
-      this.graphService.setResetFlag(true);
-      this.stepInterval = 0;
-      this.populationSize = 1000;
-      this.crossProb = 0.3;
-      this.mutProb = 0.05;
-      this.selectFromMatingPool = false;
-  }
+        this.subscriptions.push(this.socketService.getStop().subscribe((data) => {
+            this.calcIsRunning = !data;
+            this.triggerButton(!this.calcIsRunning);
+        }));
+    }
 
-  getConfig(): Configuration {
-      return {
-          stepInterval: this.stepInterval,
-          populationSize: this.populationSize,
-          crossProbability: this.crossProb,
-          mutationProbability: this.mutProb,
-          selectFromMatingPool: this.selectFromMatingPool,
-          populationToSimulate: this.populationToSim
-      };
-  }
+    ngOnDestroy() {
+        for (const sub of this.subscriptions) {
+            sub.unsubscribe();
+        }
+    }
 
+    start() {
+        this.socketService.sendStart(this.getConfig());
+    }
+
+    stop() {
+        this.socketService.sendStop();
+    }
+
+    reset() {
+        this.graphService.setResetFlag(true);
+        this.stepInterval = 0;
+        this.populationSize = 1000;
+        this.crossProb = 0.3;
+        this.mutProb = 0.05;
+        this.selectFromMatingPool = false;
+    }
+
+    getConfig(): Configuration {
+        return {
+            stepInterval: this.stepInterval,
+            populationSize: this.populationSize,
+            crossProbability: this.crossProb,
+            mutationProbability: this.mutProb,
+            selectFromMatingPool: this.selectFromMatingPool,
+            populationToSimulate: this.populationToSim
+        };
+    }
+
+    private triggerButton(bool: boolean): void {
+        const button = document.getElementById('start_button');
+        if (bool) {
+            button.removeAttribute('disabled');
+        } else {
+            button.setAttribute('disabled', '');
+        }
+    }
 }

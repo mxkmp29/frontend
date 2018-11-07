@@ -1,14 +1,18 @@
 <div class="configurations" fxLayout="column" fxLayoutGap="10px">
     <div class="buttons" fxLayout="row">
-        <button mat-stroked-button color="primary" (click)="start()" matTooltip="Start">
+        <button mat-stroked-button color="primary" (click)="start()" matTooltip="Start" id="start_button">
             <mat-icon>play_arrow</mat-icon>
         </button>
-        <button mat-stroked-button color="warn" (click)="stop()" matTooltip="Stop">
+        <button mat-stroked-button color="warn" (click)="stop()" matTooltip="Stop" id="stop_button">
             <mat-icon>stop</mat-icon>
         </button>
-        <button mat-stroked-button (click)="reset()" matTooltip="Reset">
+        <button mat-stroked-button (click)="reset()" matTooltip="Reset" id="reset_button">
             <mat-icon>clear</mat-icon>
         </button>
+    </div>
+
+    <div *ngIf="calcIsRunning">
+        <mat-progress-bar mode="indeterminate"></mat-progress-bar>
     </div>
 
     <mat-accordion>
@@ -29,7 +33,7 @@
                     <mat-card-content>
                         <div class="sliders" fxLayout="column">
                         <span>
-                            <mat-slider thumbLabel tickInterval="auto" step="1" min="0" max="50" [(ngModel)]="stepInterval"></mat-slider>
+                            <mat-slider thumbLabel tickInterval="auto" step="1" min="0" max="1000" [(ngModel)]="stepInterval"></mat-slider>
                             Step Interval (ms)
                         </span>
                             <mat-form-field class="populationSize">
