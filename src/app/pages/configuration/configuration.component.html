@@ -1,33 +1,114 @@
-<div class="configs" fxFlex>
+<div class="configurations" fxLayout="column" fxLayoutGap="10px">
     <div class="buttons" fxLayout="row">
-        <mat-button-toggle-group name="fontStyle" aria-label="Font Style">
-            <mat-button-toggle value="start" matTooltip="Start" (click)="start()">
-                <mat-icon>play_arrow</mat-icon>
-            </mat-button-toggle>
-            <mat-button-toggle value="stop" matTooltip="Stop" (click)="stop()">
-                <mat-icon>stop</mat-icon>
-            </mat-button-toggle>
-            <mat-button-toggle value="reset" matTooltip="Reset" (click)="reset()">
-                <mat-icon>clear</mat-icon>
-            </mat-button-toggle>
-        </mat-button-toggle-group>
+        <button mat-stroked-button color="primary" (click)="start()" matTooltip="Start">
+            <mat-icon>play_arrow</mat-icon>
+        </button>
+        <button mat-stroked-button color="warn" (click)="stop()" matTooltip="Stop">
+            <mat-icon>stop</mat-icon>
+        </button>
+        <button mat-stroked-button (click)="reset()" matTooltip="Reset">
+            <mat-icon>clear</mat-icon>
+        </button>
     </div>
 
-    <div class="sliders" fxLayout="column">
-        <span><mat-slider #stepInterval thumbLabel tickInterval="auto"
-                          step="1" min="0" max="50" value="stepInterval"
-        ></mat-slider>Step Interval(ms)</span>
-        <span><mat-slider #popSize thumbLabel tickInterval="auto"
-                          step="5" min="5" max="1000" value="100"
-        ></mat-slider>Population Size</span>
-        <span><mat-slider #crossProb thumbLabel tickInterval="auto"
-                          step="0.05" min="0.0" max="1.0" value="0.3"
-        ></mat-slider>Crossover Probability</span>
-        <span><mat-slider #mutProb thumbLabel tickInterval="auto"
-                          step="0.01" min="0.0" max="1.0" value="0.3"
-        ></mat-slider>Mutation Probability</span>
-    </div>
+    <mat-accordion>
+        <mat-expansion-panel>
+            <mat-expansion-panel-header>
+                <mat-panel-title>
+                    Configuration
+                </mat-panel-title>
+                <mat-panel-description>
+                    Config your Evolution
+                </mat-panel-description>
+            </mat-expansion-panel-header>
+
+            <div class="options" fxLayout="row">
+                <mat-card>
+                    <mat-card-title>General</mat-card-title>
+                    <mat-divider></mat-divider>
+                    <mat-card-content>
+                        <div class="sliders" fxLayout="column">
+                        <span>
+                            <mat-slider thumbLabel tickInterval="auto" step="1" min="0" max="50" [(ngModel)]="stepInterval"></mat-slider>
+                            Step Interval (ms)
+                        </span>
+                            <mat-form-field class="populationSize">
+                                <input matInput type="number" placeholder="Population Size" min="2"
+                                       [(ngModel)]="populationSize">
+                            </mat-form-field>
+                            <span>
+                            <mat-slider tickInterval="auto" step="0.05" min="0.0" max="1.0" [(ngModel)]="crossProb"></mat-slider>
+                            Crossover Probability
+                        </span>
+                            <span>
+                            <mat-slider thumbLabel tickInterval="auto" step="0.01" min="0.0" max="1.0" [(ngModel)]="mutProb"></mat-slider>
+                            Mutation Probability
+                        </span>
+                        </div>
+                    </mat-card-content>
+                </mat-card>
+
+                <div class="processes" fxLayout="column">
+                    <mat-card class="selection-card" fxFlex="<grow>">
+                        <mat-card-title>Selection Process</mat-card-title>
+                        <mat-divider></mat-divider>
+                        <mat-card-content>
+                            <div class="selection-process">
+                                <mat-form-field>
+                                    <mat-select>
+                                        <mat-option>None</mat-option>
+                                        <mat-option value="option1">Option 1</mat-option>
+                                        <mat-option value="option2">Option 2</mat-option>
+                                        <mat-option value="option3">Option 3</mat-option>
+                                    </mat-select>
+                                </mat-form-field>
+                            </div>
+                        </mat-card-content>
+                    </mat-card>
+
+                    <mat-card class="combination-card" fxFlex="<grow>">
+                        <mat-card-title>Combination Process</mat-card-title>
+                        <mat-divider></mat-divider>
+                        <mat-card-content>
+                            <div class="combination-process">
+                                <mat-form-field>
+                                    <mat-select>
+                                        <mat-option>None</mat-option>
+                                        <mat-option value="option1">Option 1</mat-option>
+                                        <mat-option value="option2">Option 2</mat-option>
+                                        <mat-option value="option3">Option 3</mat-option>
+                                    </mat-select>
+                                </mat-form-field>
+                            </div>
+                        </mat-card-content>
+                    </mat-card>
+                </div>
+
+                <mat-card class="cancel-criteria">
+                    <mat-card-title>Cancel Criteria</mat-card-title>
+                    <mat-divider></mat-divider>
+                    <mat-card-content>
+                            <mat-form-field>
+                                <mat-select placeholder="Cancel Criteria" name="criteria" #cancelCriteria>
+                                    <mat-option *ngFor="let criteria of criterias" [value]="criteria.value">
+                                        {{criteria.viewValue}}
+                                    </mat-option>
+                                </mat-select>
+                            </mat-form-field>
+                            <mat-form-field class="populationToSim">
+                                <input matInput type="number" placeholder="Population to Simulate" min="2"
+                                       [(ngModel)]="populationToSim">
+                            </mat-form-field>
+                            <mat-checkbox class="selectFromMating" [(ngModel)]="selectFromMatingPool">Select from Matingpool</mat-checkbox>
+                    </mat-card-content>
+                </mat-card>
+            </div>
+        </mat-expansion-panel>
+    </mat-accordion>
+
 </div>
+
+
 
 
 

@@ -1,6 +1,8 @@
-import {AfterViewInit, Component, OnInit, ViewChild} from '@angular/core';
+import {AfterViewInit, Component, OnDestroy, OnInit, ViewChild} from '@angular/core';
 import {SocketService} from '../../shared/services/socket.service';
 import {select} from 'd3';
+import {Subscription} from 'rxjs';
+import {GraphService} from '../../shared/services/graph.service';
 
 
 const TEST_DATA: any = {
@@ -32,11 +34,13 @@ export interface Chromosome {
     templateUrl: './graph2d.component.html',
     styleUrls: ['./graph2d.component.css']
 })
-export class Graph2dComponent implements OnInit, AfterViewInit {
+export class Graph2dComponent implements OnInit, AfterViewInit, OnDestroy {
 
     private svg;
+    private subscriptions: Subscription[] = [];
 
-    constructor(private socketService: SocketService) {
+    constructor(private socketService: SocketService,
+                private graphService: GraphService) {
 
     }
 
@@ -44,19 +48,30 @@ export class Graph2dComponent implements OnInit, AfterViewInit {
 
     }
 
+    ngOnDestroy() {
+        for (const sub of this.subscriptions) {
+            sub.unsubscribe();
+        }
+    }
+
     ngAfterViewInit() {
-        this.socketService.getData().subscribe((data) => {
-            console.log('DATA', data);
+        this.subscriptions.push(this.socketService.getData().subscribe((data) => {
+            console.log('Data', data);
             this.svg.remove();
             const points = this.convertToGraph(JSON.parse(data));
             this.linkGraph(points);
-        });
+        }));
+
+        this.subscriptions.push(this.graphService.getResetFlag().subscribe((data) => {
+            if (data) {
+                this.resetSvg();
+            }
+        }));
         this.convertToGraph(TEST_DATA);
     }
 
     private convertToGraph(chromosome: Chromosome): Point[] {
         const nodes: Point[] = [];
-        console.log('chromosome', chromosome);
         for (const point of chromosome.attributes) {
             point.x = (point.x) * 50; // TODO:
             point.y = (point.y) * 50; // TODO:
@@ -64,7 +79,7 @@ export class Graph2dComponent implements OnInit, AfterViewInit {
         }
         this.svg = select('#graph')
             .append('svg')
-            .attr('width', 600).attr('height', '70vh')
+            .attr('width', 600).attr('height', '600px')
             .attr('border', '1px solid black');
 
         const circles = this.svg.selectAll('circle')
@@ -129,5 +144,13 @@ export class Graph2dComponent implements OnInit, AfterViewInit {
                 return d.target.y;
             })
             .style('stroke', 'rgb(6,120,155)');
+    }
+
+    private resetSvg() {
+        this.svg.remove();
+        this.svg = select('#graph')
+            .append('svg')
+            .attr('width', 600).attr('height', '600px')
+            .attr('border', '1px solid black');
     }
 }
