@@ -59,11 +59,10 @@
                         <mat-card-content>
                             <div class="selection-process">
                                 <mat-form-field>
-                                    <mat-select>
-                                        <mat-option>None</mat-option>
-                                        <mat-option value="option1">Option 1</mat-option>
-                                        <mat-option value="option2">Option 2</mat-option>
-                                        <mat-option value="option3">Option 3</mat-option>
+                                    <mat-select placeholder="SelectionProcess" [(ngModel)]="selectedSelection">
+                                        <mat-option *ngFor="let process of selectionProcess" [value]="process.enumNumber" [matTooltip]="process.description">
+                                            {{process.name}}
+                                        </mat-option>
                                     </mat-select>
                                 </mat-form-field>
                             </div>
@@ -76,11 +75,10 @@
                         <mat-card-content>
                             <div class="combination-process">
                                 <mat-form-field>
-                                    <mat-select>
-                                        <mat-option>None</mat-option>
-                                        <mat-option value="option1">Option 1</mat-option>
-                                        <mat-option value="option2">Option 2</mat-option>
-                                        <mat-option value="option3">Option 3</mat-option>
+                                    <mat-select placeholder="Combination Process" [(ngModel)]="selectedCombination">
+                                        <mat-option *ngFor="let process of combinationProcess" [value]="process.enumNumber" [matTooltip]="process.description">
+                                            {{process.name}}
+                                        </mat-option>
                                     </mat-select>
                                 </mat-form-field>
                             </div>
@@ -93,9 +91,9 @@
                     <mat-divider></mat-divider>
                     <mat-card-content>
                             <mat-form-field>
-                                <mat-select placeholder="Cancel Criteria" name="criteria" #cancelCriteria>
-                                    <mat-option *ngFor="let criteria of criterias" [value]="criteria.value">
-                                        {{criteria.viewValue}}
+                                <mat-select placeholder="Cancel Criteria" [(ngModel)]="selectedCriteria">
+                                    <mat-option *ngFor="let crit of cancelCriteria" [value]="crit.enumNumber" [matTooltip]="crit.description">
+                                        {{crit.name}}
                                     </mat-option>
                                 </mat-select>
                             </mat-form-field>

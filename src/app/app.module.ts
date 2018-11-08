@@ -6,6 +6,7 @@ import {AppComponent} from './app.component';
 import {Graph2dComponent} from './pages/graph2d/graph2d.component';
 import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
 import {
+    MatBottomSheetModule,
     MatButtonModule,
     MatButtonToggleModule, MatCardModule,
     MatCheckboxModule, MatDividerModule, MatExpansionModule,
@@ -43,7 +44,8 @@ import {FormsModule} from '@angular/forms';
         MatExpansionModule,
         MatSnackBarModule,
         MatDividerModule,
-        MatProgressBarModule
+        MatProgressBarModule,
+        MatBottomSheetModule
     ],
     providers: [],
     bootstrap: [AppComponent]

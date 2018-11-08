@@ -10,36 +10,38 @@ import {MessageService} from './message.service';
 export class SocketService {
 
     private socket = io('localhost:8888');
-    private _isConnected = false;
 
     constructor(private msgService: MessageService) {
 
     }
 
     get isConnected(): boolean {
-        return this._isConnected;
+        return  this.socket.connected;
     }
     public getMessages(): Observable<any> {
         return new Observable(observer => {
             this.socket.on('connect', (data) => {
                 console.info('Socket:connect', data);
-                this._isConnected = true;
+                observer.next(observer);
             });
             this.socket.on('connect_error', (data) => {
                 console.info('Socket:connect_error', data);
-                this._isConnected = false;
+                observer.next(observer);
+
             });
             this.socket.on('disconnect', (data) => {
                 console.info('Socket:disconnect', data);
-                this._isConnected = false;
+                observer.next(observer);
+
             });
             this.socket.on('reconnect', (data) => {
                 console.info('Socket:reconnect', data);
-                this._isConnected = false;
+                observer.next(observer);
+
             });
             this.socket.on('error', (data) => {
                 console.error('Socket:error', data);
-                this._isConnected = false;
+                observer.next(observer);
             });
         });
     }
@@ -62,28 +64,39 @@ export class SocketService {
         });
     }
 
+    public getConfig(): Observable<any>{
+        return new Observable(observer => {
+           this.socket.on('Config', (data) => {
+              console.log('SocketIO:Config', data);
+              observer.next(data);
+           });
+        });
+    }
+
     public sendStart(config: Configuration): void {
-        if (this._isConnected) {
+        if (this.checkConnetion()) {
             console.log('Socket:start', config);
             this.socket.emit('Start', config);
-        } else {
-            this.msgService.sendMessage('No server connection!');
         }
     }
 
-    public sendConfig(config: Configuration): void {
-        if (this._isConnected) {
-            this.socket.emit('Config', config);
-        } else {
-            this.msgService.sendMessage('No server connection!');
+    public pingConfig(): void {
+        if (this.checkConnetion()) {
+            console.log('Socket:ping', true);
+            this.socket.emit('Config', true);
         }
     }
 
     public sendStop() {
-        if (this.isConnected) {
+        if (this.checkConnetion()) {
             this.socket.emit('Stop', true);
-        } else {
+        }
+    }
+
+    private checkConnetion() {
+        if(!this.isConnected) {
             this.msgService.sendMessage('No server connection!');
         }
+        return this.isConnected;
     }
 }

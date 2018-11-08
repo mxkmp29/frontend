@@ -11,23 +11,17 @@ export interface Configuration {
     mutationProbability: number;
     populationToSimulate: number;
     selectFromMatingPool: boolean;
-    cancelCriteria?: CancelCriteria;
-    combinationProcess?: CombinationProcess;
-    selectoinProcess?: SelectionProcess;
+    cancelCriteria: number;
+    combinationProcess: number;
+    selectionProcess: number;
 
 }
 
-export interface CancelCriteria {
-    test: boolean;
-}
-
-export interface CombinationProcess {
-    test: boolean;
-}
-
-
-export interface SelectionProcess {
-    test: boolean;
+export interface ServerConfig {
+    enumNumber: number;
+    description: string;
+    name: string;
+    className: string;
 }
 
 @Component({
@@ -42,6 +36,13 @@ export class ConfigurationComponent implements OnInit, AfterViewInit, OnDestroy 
     mutProb = 0.05;
     populationToSim = 100;
     selectFromMatingPool = false;
+    selectedCriteria = 0;
+    selectedCombination = 0;
+    selectedSelection = 0;
+
+    cancelCriteria: ServerConfig[];
+    combinationProcess: ServerConfig[];
+    selectionProcess: ServerConfig[];
 
     calcIsRunning = false;
 
@@ -60,12 +61,17 @@ export class ConfigurationComponent implements OnInit, AfterViewInit, OnDestroy 
 
     ngAfterViewInit() {
         this.subscriptions.push(this.socketService.getMessages().subscribe((data) => {
-
+            this.socketService.pingConfig();
         }));
 
         this.subscriptions.push(this.socketService.getStop().subscribe((data) => {
             this.calcIsRunning = !data;
             this.triggerButton(!this.calcIsRunning);
+        }));
+
+
+        this.subscriptions.push(this.socketService.getConfig().subscribe((data) => {
+            this.configToList(JSON.parse(data));
         }));
     }
 
@@ -85,6 +91,9 @@ export class ConfigurationComponent implements OnInit, AfterViewInit, OnDestroy 
 
     reset() {
         this.graphService.setResetFlag(true);
+        this.socketService.sendStop();
+        this.calcIsRunning = false;
+        this.triggerButton(true);
         this.stepInterval = 0;
         this.populationSize = 1000;
         this.crossProb = 0.3;
@@ -99,7 +108,10 @@ export class ConfigurationComponent implements OnInit, AfterViewInit, OnDestroy 
             crossProbability: this.crossProb,
             mutationProbability: this.mutProb,
             selectFromMatingPool: this.selectFromMatingPool,
-            populationToSimulate: this.populationToSim
+            populationToSimulate: this.populationToSim,
+            cancelCriteria: this.selectedCriteria,
+            selectionProcess: this.selectedSelection,
+            combinationProcess: this.selectedCombination
         };
     }
 
@@ -110,5 +122,33 @@ export class ConfigurationComponent implements OnInit, AfterViewInit, OnDestroy 
         } else {
             button.setAttribute('disabled', '');
         }
+    }
+
+    private configToList(data: ServerConfig[]) {
+        const selectProcess = 'SelectionProcess';
+        const combProcess = 'CombinationProcess';
+        const criteria = 'Criteria';
+        this.selectionProcess = [];
+        this.combinationProcess = [];
+        this.cancelCriteria = [];
+
+        for (const cfg of data) {
+            console.log('ConfigToList', cfg);
+            switch (cfg.className) {
+                case selectProcess:
+                    this.selectionProcess.push(cfg);
+                    break;
+                case combProcess:
+                    this.combinationProcess.push(cfg);
+                    break;
+                case criteria:
+                    this.cancelCriteria.push(cfg);
+                    break;
+                default:
+                    console.error('configToList: undefined', cfg);
+                    break;
+            }
+        }
+
     }
 }
