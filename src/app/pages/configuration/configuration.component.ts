@@ -14,7 +14,7 @@ export interface Configuration {
     cancelCriteria: number;
     combinationProcess: number;
     selectionProcess: number;
-
+    selectNPercent: number;
 }
 
 export interface ServerConfig {
@@ -23,7 +23,6 @@ export interface ServerConfig {
     name: string;
     className: string;
 }
-
 @Component({
     selector: 'app-configuration',
     templateUrl: './configuration.component.html',
@@ -39,6 +38,7 @@ export class ConfigurationComponent implements OnInit, AfterViewInit, OnDestroy 
     selectedCriteria = 0;
     selectedCombination = 0;
     selectedSelection = 0;
+    selectNPercent = 0.2;
 
     cancelCriteria: ServerConfig[];
     combinationProcess: ServerConfig[];
@@ -111,7 +111,8 @@ export class ConfigurationComponent implements OnInit, AfterViewInit, OnDestroy 
             populationToSimulate: this.populationToSim,
             cancelCriteria: this.selectedCriteria,
             selectionProcess: this.selectedSelection,
-            combinationProcess: this.selectedCombination
+            combinationProcess: this.selectedCombination,
+            selectNPercent: this.selectNPercent
         };
     }
 

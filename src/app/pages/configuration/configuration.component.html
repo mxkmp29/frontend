@@ -15,6 +15,7 @@
         <mat-progress-bar mode="indeterminate"></mat-progress-bar>
     </div>
 
+
     <mat-accordion>
         <mat-expansion-panel>
             <mat-expansion-panel-header>
@@ -25,86 +26,63 @@
                     Config your Evolution
                 </mat-panel-description>
             </mat-expansion-panel-header>
-
-            <div class="options" fxLayout="row">
-                <mat-card>
-                    <mat-card-title>General</mat-card-title>
-                    <mat-divider></mat-divider>
-                    <mat-card-content>
-                        <div class="sliders" fxLayout="column">
-                        <span>
-                            <mat-slider thumbLabel tickInterval="auto" step="1" min="0" max="1000" [(ngModel)]="stepInterval"></mat-slider>
-                            Step Interval (ms)
-                        </span>
-                            <mat-form-field class="populationSize">
-                                <input matInput type="number" placeholder="Population Size" min="2"
-                                       [(ngModel)]="populationSize">
-                            </mat-form-field>
-                            <span>
-                            <mat-slider tickInterval="auto" step="0.05" min="0.0" max="1.0" [(ngModel)]="crossProb"></mat-slider>
-                            Crossover Probability
-                        </span>
-                            <span>
-                            <mat-slider thumbLabel tickInterval="auto" step="0.01" min="0.0" max="1.0" [(ngModel)]="mutProb"></mat-slider>
-                            Mutation Probability
-                        </span>
-                        </div>
-                    </mat-card-content>
-                </mat-card>
-
-                <div class="processes" fxLayout="column">
-                    <mat-card class="selection-card" fxFlex="<grow>">
-                        <mat-card-title>Selection Process</mat-card-title>
-                        <mat-divider></mat-divider>
-                        <mat-card-content>
-                            <div class="selection-process">
+            <mat-card>
+                <mat-card-content>
+                    <mat-grid-list cols="3" rowHeight="100px">
+                        <mat-grid-tile class="slider-grid" [colspan]="1" [rowspan]="2">
+                            <div class="sliders" fxLayout="column">
+                                <span><mat-slider thumbLabel tickInterval="auto" step="1" min="0" max="1000" [(ngModel)]="stepInterval"></mat-slider>Step Interval (ms)</span>
+                                <mat-form-field class="populationSize">
+                                    <input matInput type="number" placeholder="Population Size" min="2" [(ngModel)]="populationSize">
+                                </mat-form-field>
+                                <span><mat-slider tickInterval="auto" step="0.05" min="0.0" max="1.0" [(ngModel)]="crossProb"></mat-slider>Crossover Probability</span>
+                                <span><mat-slider thumbLabel tickInterval="auto" step="0.01" min="0.0" max="1.0" [(ngModel)]="mutProb"></mat-slider>Mutation Probability</span>
+                            </div>
+                        </mat-grid-tile>
+                        <mat-grid-tile class="selection-grid" [colspan]="1" [rowspan]="1">
+                            <div class="selection-process" fxLayout="row" fxFlex xLayoutAlign="start start">
                                 <mat-form-field>
                                     <mat-select placeholder="SelectionProcess" [(ngModel)]="selectedSelection">
-                                        <mat-option *ngFor="let process of selectionProcess" [value]="process.enumNumber" [matTooltip]="process.description">
-                                            {{process.name}}
+                                        <mat-option *ngFor="let process of selectionProcess" [value]="process.enumNumber" [matTooltip]="process.description">{{process.name}}</mat-option>
+                                    </mat-select>
+                                </mat-form-field>
+                                <span><mat-slider thumbLabel tickInterval="auto" step="0.01" min="0" max="1" [(ngModel)]="selectNPercent"></mat-slider>in %</span>
+                            </div>
+                        </mat-grid-tile>
+                        <mat-grid-tile class="criteria-grid" [colspan]="1" [rowspan]="2">
+                            <div class="criteria" fxLayout="column">
+                                <mat-form-field>
+                                    <mat-select placeholder="Cancel Criteria" [(ngModel)]="selectedCriteria">
+                                        <mat-option *ngFor="let crit of cancelCriteria" [value]="crit.enumNumber"
+                                                    [matTooltip]="crit.description">
+                                            {{crit.name}}
                                         </mat-option>
                                     </mat-select>
                                 </mat-form-field>
+                                <mat-form-field class="populationToSim">
+                                    <input matInput type="number" placeholder="Population to Simulate" min="2"
+                                           [(ngModel)]="populationToSim">
+                                </mat-form-field>
+                                <mat-checkbox class="selectFromMating" [(ngModel)]="selectFromMatingPool">Select from
+                                    Matingpool
+                                </mat-checkbox>
                             </div>
-                        </mat-card-content>
-                    </mat-card>
-
-                    <mat-card class="combination-card" fxFlex="<grow>">
-                        <mat-card-title>Combination Process</mat-card-title>
-                        <mat-divider></mat-divider>
-                        <mat-card-content>
-                            <div class="combination-process">
+                        </mat-grid-tile>
+                        <mat-grid-tile class="combination-grid" [colspan]="1" [rowspan]="1">
+                            <div class="combination-process" fxLayout="row" fxFlex xLayoutAlign="start start">
                                 <mat-form-field>
                                     <mat-select placeholder="Combination Process" [(ngModel)]="selectedCombination">
-                                        <mat-option *ngFor="let process of combinationProcess" [value]="process.enumNumber" [matTooltip]="process.description">
+                                        <mat-option *ngFor="let process of combinationProcess"
+                                                    [value]="process.enumNumber" [matTooltip]="process.description">
                                             {{process.name}}
                                         </mat-option>
                                     </mat-select>
                                 </mat-form-field>
                             </div>
-                        </mat-card-content>
-                    </mat-card>
-                </div>
-
-                <mat-card class="cancel-criteria">
-                    <mat-card-title>Cancel Criteria</mat-card-title>
-                    <mat-divider></mat-divider>
-                    <mat-card-content>
-                            <mat-form-field>
-                                <mat-select placeholder="Cancel Criteria" [(ngModel)]="selectedCriteria">
-                                    <mat-option *ngFor="let crit of cancelCriteria" [value]="crit.enumNumber" [matTooltip]="crit.description">
-                                        {{crit.name}}
-                                    </mat-option>
-                                </mat-select>
-                            </mat-form-field>
-                            <mat-form-field class="populationToSim">
-                                <input matInput type="number" placeholder="Population to Simulate" min="2"
-                                       [(ngModel)]="populationToSim">
-                            </mat-form-field>
-                            <mat-checkbox class="selectFromMating" [(ngModel)]="selectFromMatingPool">Select from Matingpool</mat-checkbox>
-                    </mat-card-content>
-                </mat-card>
-            </div>
+                        </mat-grid-tile>
+                    </mat-grid-list>
+                </mat-card-content>
+            </mat-card>
         </mat-expansion-panel>
     </mat-accordion>
 

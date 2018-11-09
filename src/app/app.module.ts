@@ -9,7 +9,7 @@ import {
     MatBottomSheetModule,
     MatButtonModule,
     MatButtonToggleModule, MatCardModule,
-    MatCheckboxModule, MatDividerModule, MatExpansionModule,
+    MatCheckboxModule, MatDividerModule, MatExpansionModule, MatGridListModule,
     MatIconModule, MatInputModule, MatProgressBarModule, MatSelectModule,
     MatSliderModule, MatSnackBarModule, MatToolbarModule,
     MatTooltipModule
@@ -45,7 +45,8 @@ import {FormsModule} from '@angular/forms';
         MatSnackBarModule,
         MatDividerModule,
         MatProgressBarModule,
-        MatBottomSheetModule
+        MatBottomSheetModule,
+        MatGridListModule
     ],
     providers: [],
     bootstrap: [AppComponent]
