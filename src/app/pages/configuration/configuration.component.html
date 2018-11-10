@@ -34,12 +34,14 @@
                     <mat-grid-list cols="3" rowHeight="100px">
                         <mat-grid-tile class="slider-grid" [colspan]="1" [rowspan]="2">
                             <div class="sliders" fxLayout="column">
-                                <span><mat-slider thumbLabel tickInterval="auto" step="1" min="0" max="1000" [(ngModel)]="stepInterval"></mat-slider>Step Interval (ms)</span>
                                 <mat-form-field class="populationSize">
                                     <input matInput type="number" placeholder="Population Size" min="2" [(ngModel)]="populationSize">
                                 </mat-form-field>
-                                <span><mat-slider tickInterval="auto" step="0.05" min="0.0" max="1.0" [(ngModel)]="crossProb"></mat-slider>Crossover Probability</span>
+                                <span><mat-slider thumbLabel tickInterval="auto" step="0.05" min="0.0" max="1.0"
+                                                  [(ngModel)]="crossProb"></mat-slider>Crossover Probability</span>
                                 <span><mat-slider thumbLabel tickInterval="auto" step="0.01" min="0.0" max="1.0" [(ngModel)]="mutProb"></mat-slider>Mutation Probability</span>
+                                <span><mat-slider thumbLabel tickInterval="auto" step="1" min="0" max="1000"
+                                                  [(ngModel)]="stepInterval"></mat-slider>Step Interval (ms)</span>
                             </div>
                         </mat-grid-tile>
                         <mat-grid-tile class="selection-grid" [colspan]="1" [rowspan]="1">
