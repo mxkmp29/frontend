@@ -9,6 +9,9 @@
         <button mat-stroked-button (click)="reset()" matTooltip="Reset" id="reset_button">
             <mat-icon>clear</mat-icon>
         </button>
+        <button mat-stroked-button (click)="loadFile()" matTooltip="Load file" id="loadFile">
+            <mat-icon>folder</mat-icon>
+        </button>
     </div>
 
     <div *ngIf="calcIsRunning">

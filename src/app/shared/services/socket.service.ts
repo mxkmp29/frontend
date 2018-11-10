@@ -64,6 +64,15 @@ export class SocketService {
         });
     }
 
+    public getFiles(): Observable<File> {
+        return new Observable<File>(observer => {
+            this.socket.on('File', (data) => {
+                console.log('SocketIO.File', data);
+                observer.next(data);
+            });
+        });
+    }
+
     public getConfig(): Observable<any>{
         return new Observable(observer => {
            this.socket.on('Config', (data) => {
@@ -79,6 +88,14 @@ export class SocketService {
             this.socket.emit('Start', config);
         }
     }
+
+    public requestFiles(): void {
+        if (this.checkConnetion()) {
+            console.log('Socket:File');
+            this.socket.emit('File', null);
+        }
+    }
+
 
     public pingConfig(): void {
         if (this.checkConnetion()) {

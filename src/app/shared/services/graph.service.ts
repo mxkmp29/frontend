@@ -1,6 +1,7 @@
-import { Injectable } from '@angular/core';
+import {Injectable} from '@angular/core';
 import {Observable, ReplaySubject} from 'rxjs';
 import {Chromosome} from '../../pages/graph2d/graph2d.component';
+import {ServerFile} from '../../pages/configuration/configuration.component';
 
 @Injectable({
   providedIn: 'root'
@@ -12,6 +13,9 @@ export class GraphService {
 
   private bestChromosome: ReplaySubject<Chromosome> = new ReplaySubject(1);
   private chromsomeSource = this.bestChromosome.asObservable();
+
+    private serverFile: ReplaySubject<ServerFile> = new ReplaySubject(1);
+    private serverFileSource = this.serverFile.asObservable();
 
   constructor() { }
 
@@ -29,4 +33,14 @@ export class GraphService {
   public setBestChromosome(chromosome: Chromosome) {
     this.bestChromosome.next(chromosome);
   }
+
+    public getFile(): Observable<ServerFile> {
+        return this.serverFileSource;
+    }
+
+    public setFile(file: ServerFile): void {
+        this.serverFile.next(file);
+    }
+
+
 }

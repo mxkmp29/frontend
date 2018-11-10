@@ -1,8 +1,9 @@
-import {AfterViewInit, Component, OnDestroy, OnInit, ViewChild} from '@angular/core';
+import {AfterViewInit, Component, OnDestroy, OnInit} from '@angular/core';
 import {SocketService} from '../../shared/services/socket.service';
 import {select} from 'd3';
 import {Subscription} from 'rxjs';
 import {GraphService} from '../../shared/services/graph.service';
+import {ServerFile} from '../configuration/configuration.component';
 
 
 const TEST_DATA: any = {
@@ -58,7 +59,7 @@ export class Graph2dComponent implements OnInit, AfterViewInit, OnDestroy {
         this.subscriptions.push(this.socketService.getData().subscribe((data) => {
             console.log('Data', data);
             this.svg.remove();
-            const points = this.convertToGraph(JSON.parse(data));
+            const points = this.convertToGraph(JSON.parse(data).attributes);
             this.linkGraph(points);
         }));
 
@@ -67,12 +68,17 @@ export class Graph2dComponent implements OnInit, AfterViewInit, OnDestroy {
                 this.resetSvg();
             }
         }));
-        this.convertToGraph(TEST_DATA);
+
+        this.subscriptions.push(this.graphService.getFile().subscribe((file: ServerFile) => {
+            this.svg.remove();
+            this.convertToGraph((file.point) as Point[]);
+        }));
+        this.convertToGraph(TEST_DATA.attributes);
     }
 
-    private convertToGraph(chromosome: Chromosome): Point[] {
+    private convertToGraph(points: Point[]): Point[] {
         const nodes: Point[] = [];
-        for (const point of chromosome.attributes) {
+        for (const point of points) {
             point.x = (point.x) * 50; // TODO:
             point.y = (point.y) * 50; // TODO:
             nodes.push(point);

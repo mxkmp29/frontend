@@ -8,21 +8,33 @@ import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
 import {
     MatBottomSheetModule,
     MatButtonModule,
-    MatButtonToggleModule, MatCardModule,
-    MatCheckboxModule, MatDividerModule, MatExpansionModule, MatGridListModule,
-    MatIconModule, MatInputModule, MatProgressBarModule, MatSelectModule,
-    MatSliderModule, MatSnackBarModule, MatToolbarModule,
+    MatButtonToggleModule,
+    MatCardModule,
+    MatCheckboxModule,
+    MatDividerModule,
+    MatExpansionModule,
+    MatGridListModule,
+    MatIconModule,
+    MatInputModule,
+    MatListModule,
+    MatProgressBarModule,
+    MatSelectModule,
+    MatSliderModule,
+    MatSnackBarModule,
+    MatToolbarModule,
     MatTooltipModule
 } from '@angular/material';
 import {ConfigurationComponent} from './pages/configuration/configuration.component';
 import {FlexLayoutModule} from '@angular/flex-layout';
 import {FormsModule} from '@angular/forms';
+import {FileComponent} from './pages/file/file.component';
 
 @NgModule({
     declarations: [
         AppComponent,
         Graph2dComponent,
-        ConfigurationComponent
+        ConfigurationComponent,
+        FileComponent
     ],
     imports: [
         BrowserModule,
@@ -46,7 +58,11 @@ import {FormsModule} from '@angular/forms';
         MatDividerModule,
         MatProgressBarModule,
         MatBottomSheetModule,
-        MatGridListModule
+        MatGridListModule,
+        MatListModule
+    ],
+    entryComponents: [
+        FileComponent
     ],
     providers: [],
     bootstrap: [AppComponent]

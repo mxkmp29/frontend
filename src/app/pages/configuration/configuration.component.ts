@@ -3,6 +3,10 @@ import {SocketService} from '../../shared/services/socket.service';
 import {MessageService} from '../../shared/services/message.service';
 import {Subscription} from 'rxjs';
 import {GraphService} from '../../shared/services/graph.service';
+import {Point} from '../graph2d/graph2d.component';
+import {MatBottomSheet} from '@angular/material';
+import {FileComponent} from '../file/file.component';
+import {isNullOrUndefined} from 'util';
 
 export interface Configuration {
     stepInterval: number;
@@ -15,6 +19,7 @@ export interface Configuration {
     combinationProcess: number;
     selectionProcess: number;
     selectNPercent: number;
+    file: string;
 }
 
 export interface ServerConfig {
@@ -23,6 +28,14 @@ export interface ServerConfig {
     name: string;
     className: string;
 }
+
+export interface ServerFile {
+    name: string;
+    path: string;
+    description: string;
+    point: Point[];
+}
+
 @Component({
     selector: 'app-configuration',
     templateUrl: './configuration.component.html',
@@ -39,6 +52,7 @@ export class ConfigurationComponent implements OnInit, AfterViewInit, OnDestroy 
     selectedCombination = 0;
     selectedSelection = 0;
     selectNPercent = 0.2;
+    currentFile: ServerFile;
 
     cancelCriteria: ServerConfig[];
     combinationProcess: ServerConfig[];
@@ -46,12 +60,16 @@ export class ConfigurationComponent implements OnInit, AfterViewInit, OnDestroy 
 
     calcIsRunning = false;
 
+    files: ServerFile[] = [];
+
     private subscriptions: Subscription[] = [];
 
     @ViewChild('start_button') runButton;
 
     constructor(private socketService: SocketService,
-                private graphService: GraphService) {
+                private graphService: GraphService,
+                private bottomSheet: MatBottomSheet,
+                private msgService: MessageService) {
 
     }
 
@@ -62,6 +80,7 @@ export class ConfigurationComponent implements OnInit, AfterViewInit, OnDestroy 
     ngAfterViewInit() {
         this.subscriptions.push(this.socketService.getMessages().subscribe((data) => {
             this.socketService.pingConfig();
+            this.socketService.requestFiles(); //TODO: woanders hin
         }));
 
         this.subscriptions.push(this.socketService.getStop().subscribe((data) => {
@@ -73,6 +92,10 @@ export class ConfigurationComponent implements OnInit, AfterViewInit, OnDestroy 
         this.subscriptions.push(this.socketService.getConfig().subscribe((data) => {
             this.configToList(JSON.parse(data));
         }));
+
+        this.subscriptions.push(this.socketService.getFiles().subscribe((data: any) => {
+            this.files = JSON.parse(data);
+        }));
     }
 
     ngOnDestroy() {
@@ -82,7 +105,10 @@ export class ConfigurationComponent implements OnInit, AfterViewInit, OnDestroy 
     }
 
     start() {
-        this.socketService.sendStart(this.getConfig());
+        const config = this.getConfig();
+        if (this.validateConfig(config)) {
+            this.socketService.sendStart(this.getConfig());
+        }
     }
 
     stop() {
@@ -101,19 +127,30 @@ export class ConfigurationComponent implements OnInit, AfterViewInit, OnDestroy 
         this.selectFromMatingPool = false;
     }
 
+    validateConfig(): boolean {
+        if (isNullOrUndefined(this.currentFile.path)) {
+            this.msgService.sendMessage('Please choose a file');
+            return false;
+        }
+        return true;
+    }
+
     getConfig(): Configuration {
-        return {
-            stepInterval: this.stepInterval,
-            populationSize: this.populationSize,
-            crossProbability: this.crossProb,
-            mutationProbability: this.mutProb,
-            selectFromMatingPool: this.selectFromMatingPool,
-            populationToSimulate: this.populationToSim,
-            cancelCriteria: this.selectedCriteria,
-            selectionProcess: this.selectedSelection,
-            combinationProcess: this.selectedCombination,
-            selectNPercent: this.selectNPercent
-        };
+        if (this.validateConfig()) {
+            return {
+                stepInterval: this.stepInterval,
+                populationSize: this.populationSize,
+                crossProbability: this.crossProb,
+                mutationProbability: this.mutProb,
+                selectFromMatingPool: this.selectFromMatingPool,
+                populationToSimulate: this.populationToSim,
+                cancelCriteria: this.selectedCriteria,
+                selectionProcess: this.selectedSelection,
+                combinationProcess: this.selectedCombination,
+                selectNPercent: this.selectNPercent,
+                file: this.currentFile.path
+            };
+        }
     }
 
     private triggerButton(bool: boolean): void {
@@ -150,6 +187,18 @@ export class ConfigurationComponent implements OnInit, AfterViewInit, OnDestroy 
                     break;
             }
         }
+    }
 
+    loadFile() {
+        const bottomSheetRef = this.bottomSheet.open(FileComponent, {
+            data: this.files,
+        });
+
+        bottomSheetRef.afterDismissed().subscribe((file) => {
+            this.currentFile = file;
+            this.graphService.setFile(file);
+            bottomSheetRef.dismiss();
+        });
     }
 }
+

@@ -1,0 +1,6 @@
+<mat-nav-list>
+    <a *ngFor="let file of files" mat-list-item (click)="openLink($event, file)">
+        <span mat-line>{{file.name}}</span>
+        <span mat-line>{{file.description}}</span>
+    </a>
+</mat-nav-list>
