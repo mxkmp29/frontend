@@ -28,6 +28,7 @@ export interface Chromosome {
     fitness: number;
     survialProb: number;
     attributes: Point[];
+    generation: number;
 }
 
 @Component({
@@ -38,6 +39,7 @@ export interface Chromosome {
 export class Graph2dComponent implements OnInit, AfterViewInit, OnDestroy {
 
     private svg;
+    private currentFile: Point[];
     private subscriptions: Subscription[] = [];
 
     constructor(private socketService: SocketService,
@@ -56,10 +58,14 @@ export class Graph2dComponent implements OnInit, AfterViewInit, OnDestroy {
     }
 
     ngAfterViewInit() {
+        this.currentFile = TEST_DATA.attributes;
+        this.convertToGraph(this.currentFile);
+
         this.subscriptions.push(this.socketService.getData().subscribe((data) => {
             console.log('Data', data);
-            this.svg.remove();
-            const points = this.convertToGraph(JSON.parse(data).attributes);
+            this.currentFile = JSON.parse(data).attributes;
+            this.resetSvg();
+            const points = this.convertToGraph(this.currentFile);
             this.linkGraph(points);
         }));
 
@@ -70,10 +76,13 @@ export class Graph2dComponent implements OnInit, AfterViewInit, OnDestroy {
         }));
 
         this.subscriptions.push(this.graphService.getFile().subscribe((file: ServerFile) => {
-            this.svg.remove();
-            this.convertToGraph((file.point) as Point[]);
+            this.currentFile = file.point;
+
+            this.resetSvg();
+            this.convertToGraph(this.currentFile);
         }));
-        this.convertToGraph(TEST_DATA.attributes);
+
+
     }
 
     private convertToGraph(points: Point[]): Point[] {
@@ -83,10 +92,12 @@ export class Graph2dComponent implements OnInit, AfterViewInit, OnDestroy {
             point.y = (point.y) * 50; // TODO:
             nodes.push(point);
         }
+
         this.svg = select('#graph')
             .append('svg')
-            .attr('width', 600).attr('height', '600px')
-            .attr('border', '1px solid black');
+            .attr('width', '600px').attr('height', '600px')
+            .attr('style', 'border:1px solid black');
+
 
         const circles = this.svg.selectAll('circle')
             .data(nodes)
@@ -98,7 +109,7 @@ export class Graph2dComponent implements OnInit, AfterViewInit, OnDestroy {
             .attr('cy', (d) => {
                 return d.y;
             })
-            .attr('r', '0.5em')
+            .attr('r', '7px')
             .attr('fill', 'black');
 
         const text = this.svg.selectAll('text')
@@ -152,11 +163,13 @@ export class Graph2dComponent implements OnInit, AfterViewInit, OnDestroy {
             .style('stroke', 'rgb(6,120,155)');
     }
 
+    private update() {
+        this.svg.selectAll('g > *').remove();
+    }
+
     private resetSvg() {
-        this.svg.remove();
-        this.svg = select('#graph')
-            .append('svg')
-            .attr('width', 600).attr('height', '600px')
-            .attr('border', '1px solid black');
+        if (this.currentFile) {
+            this.svg.remove();
+        }
     }
 }

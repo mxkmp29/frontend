@@ -99,7 +99,7 @@ export class SocketService {
 
     public pingConfig(): void {
         if (this.checkConnetion()) {
-            console.log('Socket:ping', true);
+            console.log('Socket:Config', true);
             this.socket.emit('Config', true);
         }
     }

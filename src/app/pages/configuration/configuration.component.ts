@@ -105,8 +105,7 @@ export class ConfigurationComponent implements OnInit, AfterViewInit, OnDestroy 
     }
 
     start() {
-        const config = this.getConfig();
-        if (this.validateConfig(config)) {
+        if (this.validateConfig()) {
             this.socketService.sendStart(this.getConfig());
         }
     }
@@ -195,9 +194,11 @@ export class ConfigurationComponent implements OnInit, AfterViewInit, OnDestroy 
         });
 
         bottomSheetRef.afterDismissed().subscribe((file) => {
-            this.currentFile = file;
-            this.graphService.setFile(file);
-            bottomSheetRef.dismiss();
+            if (file) {
+                this.currentFile = file;
+                this.graphService.setFile(file);
+                bottomSheetRef.dismiss();
+            }
         });
     }
 }

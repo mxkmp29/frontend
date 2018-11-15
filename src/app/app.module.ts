@@ -28,13 +28,18 @@ import {ConfigurationComponent} from './pages/configuration/configuration.compon
 import {FlexLayoutModule} from '@angular/flex-layout';
 import {FormsModule} from '@angular/forms';
 import {FileComponent} from './pages/file/file.component';
+import {GenerationinfoComponent} from './pages/generationinfo/generationinfo.component';
+import {ChartsModule} from 'ng2-charts';
+import {FitnessGraphComponent} from './pages/fitness-graph/fitness-graph.component';
 
 @NgModule({
     declarations: [
         AppComponent,
         Graph2dComponent,
         ConfigurationComponent,
-        FileComponent
+        FileComponent,
+        GenerationinfoComponent,
+        FitnessGraphComponent
     ],
     imports: [
         BrowserModule,
@@ -59,7 +64,8 @@ import {FileComponent} from './pages/file/file.component';
         MatProgressBarModule,
         MatBottomSheetModule,
         MatGridListModule,
-        MatListModule
+        MatListModule,
+        ChartsModule
     ],
     entryComponents: [
         FileComponent
